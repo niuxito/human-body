@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below. Mesh data derive from BodyParts3D (DBCLS, CC BY-SA 2.1 JP); please cite it too."
+title: "Anatomía en capas: interactive 3D atlas of the human body"
+type: software
+version: 1.0.0
+date-released: 2026-10-26
+license:
+  - MIT
+  - CC-BY-SA-4.0
+authors:
+  - family-names: Parrón
+    given-names: Alexis
+repository-code: "https://github.com/niuxito/human-body"
+url: "https://anatomia.alexisparron.com"
+keywords:
+  - anatomy
+  - 3D
+  - education
+  - three.js
+  - BodyParts3D
+references:
+  - type: data
+    title: "BodyParts3D"
+    authors:
+      - name: "The Database Center for Life Science (DBCLS)"
+    url: "https://lifesciencedb.jp/bp3d/"
+    license: CC-BY-SA-2.1-JP

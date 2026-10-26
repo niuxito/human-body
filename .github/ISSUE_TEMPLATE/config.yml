@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Vulnerabilidad de seguridad / Security vulnerability
+    url: https://github.com/niuxito/human-body/security/advisories/new
+    about: Reporta en privado, no abras un issue público / Report privately, do not open a public issue.

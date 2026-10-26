@@ -1,0 +1,24 @@
+name: Error en una ficha anatómica / Error in an anatomical card
+description: Un dato incorrecto, impreciso o mal redactado en la ficha de una estructura
+labels: ["contenido"]
+body:
+  - type: input
+    id: estructura
+    attributes:
+      label: Estructura / Structure
+      description: Nombre tal como aparece en el visor
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: Qué es incorrecto / What is wrong
+    validations:
+      required: true
+  - type: textarea
+    id: fuente
+    attributes:
+      label: Fuente / Source
+      description: Atlas, libro o terminología anatómica que respalda la corrección
+    validations:
+      required: false
