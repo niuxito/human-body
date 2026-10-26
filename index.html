@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Atlas 3D interactivo del cuerpo humano (BodyParts3D) con capas y fichas en español.">
+<title>Anatomía en capas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  color-scheme: dark;
+  --bg0:#090e13; --bg1:#111b24; --bg2:#172431;
+  --panel:rgba(14,21,29,.86); --panel-solid:#0f1820;
+  --line:rgba(170,195,210,.13); --line2:rgba(170,195,210,.24);
+  --tx:#e8eef1; --mut:#95a6b1; --dim:#65757f;
+  --acc:#f2c46d; --acc-ink:#1b1406;
+  --serif:"Newsreader", "Iowan Old Style", Georgia, serif;
+  --sans:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r:10px;
+}
+html,body{height:100%}
+body{margin:0;background:var(--bg0);color:var(--tx);font:14px/1.45 var(--sans);overflow:hidden;-webkit-font-smoothing:antialiased}
+#stage{position:fixed;inset:0;background:radial-gradient(ellipse 70% 80% at 50% 42%, #1a2835 0%, #0f1820 45%, var(--bg0) 100%)}
+#stage canvas{display:block;width:100%;height:100%;outline:none;touch-action:none}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+/* ---------- barra superior */
+.top{position:fixed;left:0;right:0;top:0;padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 0;display:flex;gap:12px;align-items:flex-start;pointer-events:none;z-index:5}
+.brand{pointer-events:auto;padding:4px 2px}
+.brand h1{margin:0;font:500 26px/1 var(--serif);letter-spacing:-.01em;text-wrap:balance}
+.brand h1 em{font-style:italic;color:var(--acc)}
+.brand p{margin:6px 0 0;color:var(--mut);font-size:12px;letter-spacing:.02em}
+.views{margin-left:auto;display:flex;gap:6px;pointer-events:auto;flex-wrap:wrap;justify-content:flex-end}
+.chipbtn{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 11px;font-size:12px;cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:border-color .15s,background .15s;white-space:nowrap}
+.chipbtn:hover{border-color:var(--line2);background:var(--bg2)}
+.chipbtn[aria-pressed="true"]{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+
+/* ---------- paneles */
+.panel{position:fixed;top:92px;bottom:16px;width:330px;background:var(--panel);border:1px solid var(--line);border-radius:14px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:flex;flex-direction:column;z-index:4;overflow:hidden}
+#left{left:16px}
+#right{right:16px;width:360px}
+.phead{padding:14px 16px 10px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.eyebrow{font:500 10.5px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.pbody{overflow:auto;flex:1;padding:6px 8px 14px;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+
+.search{position:relative}
+.search input{width:100%;box-sizing:border-box;background:var(--bg1);border:1px solid var(--line);border-radius:8px;color:var(--tx);padding:8px 10px 8px 30px;font:inherit;font-size:13px}
+.search input::placeholder{color:var(--dim)}
+.search svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);opacity:.6}
+#results{display:flex;flex-direction:column;gap:1px;padding:4px 0}
+#results[hidden]{display:none}
+
+.peel{display:grid;grid-template-columns:repeat(4,1fr);background:var(--bg1);border:1px solid var(--line);border-radius:8px;padding:3px;gap:3px}
+.peel button{background:none;border:0;border-radius:6px;padding:6px 2px;font-size:11.5px;color:var(--mut);cursor:pointer;line-height:1.15}
+.peel button:hover{color:var(--tx)}
+.peel button[aria-pressed="true"]{background:var(--bg2);color:var(--tx);box-shadow:inset 0 0 0 1px var(--line2)}
+
+.sys{border-radius:9px;margin:2px 0}
+.sysrow{display:grid;grid-template-columns:18px 1fr auto 28px;align-items:center;gap:8px;padding:7px 6px 4px 8px}
+.sw{width:12px;height:12px;border-radius:3px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+.sysname{background:none;border:0;text-align:left;padding:0;cursor:pointer;font-weight:500;font-size:13.5px;display:flex;gap:6px;align-items:center}
+.sysname .chev{transition:transform .15s;opacity:.55}
+.sys.open .sysname .chev{transform:rotate(90deg)}
+.count{font:11px var(--mono);color:var(--dim);font-variant-numeric:tabular-nums}
+.eye{width:28px;height:24px;border:0;background:none;border-radius:6px;cursor:pointer;display:grid;place-items:center;color:var(--mut)}
+.eye:hover{background:var(--bg2);color:var(--tx)}
+.eye[aria-pressed="false"]{color:var(--dim);opacity:.6}
+.oprow{display:flex;align-items:center;gap:8px;padding:0 8px 8px 34px}
+.oprow label{font-size:11px;color:var(--dim);width:52px}
+.oprow output{font:11px var(--mono);color:var(--mut);width:34px;text-align:right;font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:18px;background:transparent;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:3px;border-radius:3px;background:linear-gradient(90deg,var(--c,#aaa) var(--p,100%),var(--line2) var(--p,100%))}
+input[type=range]::-moz-range-track{height:3px;border-radius:3px;background:linear-gradient(90deg,var(--c,#aaa) var(--p,100%),var(--line2) var(--p,100%))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--tx);margin-top:-4.5px;border:0}
+input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:var(--tx);border:0}
+.sys.off .sysname,.sys.off .count{opacity:.45}
+.groups{padding:0 4px 6px 30px;display:none}
+.sys.open .groups{display:block}
+.grp{margin:1px 0}
+.grow{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;padding:4px 6px;border-radius:6px}
+.grow:hover{background:rgba(255,255,255,.03)}
+.grow input{accent-color:var(--acc);margin:0}
+.grow button{background:none;border:0;text-align:left;padding:0;cursor:pointer;font-size:12.5px;color:var(--mut)}
+.grow button:hover{color:var(--tx)}
+.plist{padding:2px 0 6px 22px;display:none}
+.grp.open .plist{display:block}
+.pitem{display:flex;align-items:center;gap:8px;width:100%;background:none;border:0;text-align:left;padding:4px 8px;border-radius:6px;font-size:12.5px;color:var(--mut);cursor:pointer}
+.pitem:hover{background:var(--bg2);color:var(--tx)}
+.pitem.sel{background:rgba(242,196,109,.12);color:var(--acc)}
+.pitem .dot{width:7px;height:7px;border-radius:50%;flex:none}
+.pitem .sd{margin-left:auto;font:10.5px var(--mono);color:var(--dim)}
+.pitem.hid{opacity:.45;text-decoration:line-through}
+
+/* ---------- ficha */
+#info{padding:18px 18px 20px;display:flex;flex-direction:column;gap:14px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:11px;padding:3px 8px;border-radius:999px;border:1px solid var(--line2);color:var(--mut);display:inline-flex;gap:6px;align-items:center}
+.tag .sw{width:8px;height:8px;border-radius:50%}
+#info h2{margin:0;font:500 27px/1.12 var(--serif);letter-spacing:-.01em;text-wrap:balance}
+#info .grpname{color:var(--mut);font-size:12.5px;margin-top:-6px}
+#info .desc{margin:0;color:#cfd9de;font-size:14px;line-height:1.58;max-width:62ch}
+dl.facts{margin:0;display:grid;grid-template-columns:1fr;gap:0;border-top:1px solid var(--line)}
+dl.facts div{display:grid;grid-template-columns:92px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+dl.facts dt{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding-top:2px}
+dl.facts dd{margin:0;font-size:13px;color:var(--tx)}
+.src{font:11px/1.5 var(--mono);color:var(--dim);word-break:break-word}
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.btn{background:var(--bg1);border:1px solid var(--line);border-radius:8px;padding:8px 6px;font-size:12.5px;cursor:pointer;display:flex;gap:6px;align-items:center;justify-content:center}
+.btn:hover{border-color:var(--line2);background:var(--bg2)}
+.btn.primary{background:var(--acc);color:var(--acc-ink);border-color:var(--acc);font-weight:500}
+.empty h2{font:500 24px/1.15 var(--serif)!important}
+.howto{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.howto li{display:grid;grid-template-columns:22px 1fr;gap:8px;color:#cfd9de;font-size:13px}
+.howto kbd{font:11px var(--mono);background:var(--bg2);border:1px solid var(--line2);border-radius:4px;padding:0 4px;color:var(--tx)}
+.syslist{display:grid;gap:10px}
+.syslist div{display:grid;grid-template-columns:10px 1fr;gap:10px;font-size:12.5px;color:var(--mut)}
+.syslist b{color:var(--tx);font-weight:500}
+.syslist .sw{width:10px;height:10px;margin-top:4px;border-radius:50%}
+details.about{border-top:1px solid var(--line);padding-top:12px}
+details.about summary{cursor:pointer;font-size:12.5px;color:var(--tx);font-weight:500}
+details.about p,details.about li{font-size:12.5px;color:var(--mut);line-height:1.55}
+details.about ul{padding-left:18px;margin:6px 0}
+details.about a{color:var(--acc)}
+
+/* ---------- etiqueta 3D y tooltip */
+#labelLayer{position:fixed;inset:0;pointer-events:none;z-index:3}
+#labelLayer svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+#label{position:absolute;left:0;top:0;transform:translate(-9999px,0);background:rgba(10,15,20,.92);border:1px solid var(--acc);border-radius:8px;padding:7px 11px 8px;max-width:260px}
+#label .ln{font:500 16px/1.2 var(--serif);color:var(--tx)}
+#label .ls{font-size:11px;color:var(--acc);letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+#tip{position:fixed;left:0;top:0;z-index:6;pointer-events:none;background:rgba(10,15,20,.9);border:1px solid var(--line2);border-radius:6px;padding:4px 8px;font-size:12px;white-space:nowrap;transform:translate(-9999px,0)}
+#tip i{font-style:normal;color:var(--dim);margin-left:6px}
+
+/* ---------- carga */
+#loader{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:7;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 16px;min-width:280px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:opacity .5s}
+#loader.done{opacity:0;pointer-events:none}
+#loader .lt{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-bottom:8px}
+#loader .bar{height:3px;background:var(--line);border-radius:3px;overflow:hidden}
+#loader .bar i{display:block;height:100%;width:0;background:var(--acc);transition:width .2s}
+#err{color:#ff9b8a;font-size:12px;margin-top:8px}
+
+.credit{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 10px);font-size:10.5px;color:var(--dim);z-index:2;text-align:center;white-space:nowrap}
+.credit a{color:var(--mut)}
+
+/* ---------- móvil */
+.tabs{display:none}
+@media (max-width: 900px){
+  .top{flex-direction:column;gap:8px}
+  .brand h1{font-size:21px}
+  .brand p{display:none}
+  .views{margin-left:0;max-width:100%;flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;scrollbar-width:none;padding-bottom:2px}
+  .views::-webkit-scrollbar{display:none}
+  .views .chipbtn{padding:5px 10px;font-size:11.5px}
+  .panel{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 56px);left:10px!important;right:10px!important;width:auto!important;max-height:44vh;border-radius:14px}
+  .panel:not(.show){display:none}
+  .tabs{display:flex;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 10px);z-index:6;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px;gap:3px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+  .tabs button{background:none;border:0;border-radius:999px;padding:7px 16px;font-size:13px;color:var(--mut);cursor:pointer}
+  .tabs button[aria-pressed="true"]{background:var(--acc);color:var(--acc-ink)}
+  .credit{display:none}
+  #loader{bottom:70px;min-width:0;width:calc(100% - 52px)}
+}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="labelLayer"><svg aria-hidden="true"><line id="lline" x1="0" y1="0" x2="0" y2="0" stroke="#f2c46d" stroke-width="1.2"/><circle id="ldot" r="4" fill="#f2c46d" stroke="#0a0f14" stroke-width="2" cx="-99" cy="-99"/></svg><div id="label"><div class="ln"></div><div class="ls"></div></div></div>
+<div id="tip"></div>
+
+<header class="top">
+  <div class="brand">
+    <h1>Anatomía <em>en capas</em></h1>
+    <p id="stats">Atlas 3D del cuerpo humano · varón adulto · datos BodyParts3D</p>
+  </div>
+  <nav class="views" aria-label="Vistas">
+    <button class="chipbtn" data-view="front">Anterior</button>
+    <button class="chipbtn" data-view="back">Posterior</button>
+    <button class="chipbtn" data-view="right">Lateral dcho.</button>
+    <button class="chipbtn" data-view="left">Lateral izq.</button>
+    <button class="chipbtn" data-view="top">Superior</button>
+    <button class="chipbtn" id="spin" aria-pressed="false">Girar</button>
+    <button class="chipbtn" id="reset">Restablecer</button>
+  </nav>
+</header>
+
+<aside class="panel show" id="left" aria-label="Capas y sistemas">
+  <div class="phead">
+    <div class="search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Buscar estructura (p. ej. «fémur», «hígado»)" autocomplete="off" aria-label="Buscar estructura">
+    </div>
+    <div>
+      <div class="eyebrow" style="margin-bottom:7px">Pelar capas</div>
+      <div class="peel" role="group" aria-label="Pelar capas">
+        <button data-peel="0" aria-pressed="true">Todo</button>
+        <button data-peel="1" aria-pressed="false">Sin piel</button>
+        <button data-peel="2" aria-pressed="false">Sin músculo</button>
+        <button data-peel="3" aria-pressed="false">Vísceras</button>
+      </div>
+    </div>
+  </div>
+  <div class="pbody">
+    <div id="results" hidden></div>
+    <div id="systems"></div>
+  </div>
+</aside>
+
+<aside class="panel" id="right" aria-label="Ficha de la estructura">
+  <div class="pbody" style="padding:0"><div id="info"></div></div>
+</aside>
+
+<div class="tabs" role="group" aria-label="Paneles">
+  <button data-tab="none" aria-pressed="true">Modelo</button>
+  <button data-tab="left" aria-pressed="false">Capas</button>
+  <button data-tab="right" aria-pressed="false">Ficha</button>
+</div>
+
+<div id="loader"><div class="lt"><span id="ltxt">Cargando modelo anatómico…</span><span id="lpct">0 %</span></div><div class="bar"><i id="lbar"></i></div><div id="err" hidden></div></div>
+<div class="credit">Modelo 3D: <a href="https://lifesciencedb.jp/bp3d/" target="_blank" rel="noopener">BodyParts3D</a> © DBCLS · <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/deed.es" target="_blank" rel="noopener">CC BY-SA 2.1 JP</a> · simplificado para web</div>
+<script src="data/anatomia.js"></script>
+<script src="models/esq.js"></script>
+<script src="models/mus.js"></script>
+<script src="models/ner.js"></script>
+<script src="models/dig.js"></script>
+<script src="models/car.js"></script>
+<script src="models/end.js"></script>
+<script src="models/uri.js"></script>
+<script src="models/rep.js"></script>
+<script src="models/res.js"></script>
+<script src="models/teg.js"></script>
+<script src="models/lin.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

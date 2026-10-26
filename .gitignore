@@ -1,0 +1,27 @@
+node_modules/
+.DS_Store
+
+# Salidas intermedias de herramientas/
+herramientas/BodyParts3D/
+herramientas/simp/
+herramientas/site/
+herramientas/stlnames.txt
+herramientas/fidsys.json
+__pycache__/
+
+# Ficheros locales que no son del proyecto
+anatomia-humana-en-capas.zip
+CLAUDE.md
+
+# Secretos y credenciales
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+secrets.*
+credentials.*
