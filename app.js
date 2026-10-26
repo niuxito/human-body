@@ -35188,7 +35188,8 @@ void main() {
         <p>Para que funcione en el navegador, las mallas se han simplificado (\u224826 millones \u2192 \u22483,3 millones de tri\xE1ngulos) sin alterar su posici\xF3n ni su forma general. La nomenclatura sigue la Terminolog\xEDa Anat\xF3mica en espa\xF1ol.</p>
         <p><b>Estructuras que el modelo de origen no incluye:</b></p>
         <ul><li>M\xE9dula espinal y nervios perif\xE9ricos (solo el nervio y la v\xEDa \xF3pticos).</li><li>Gl\xE1ndula tiroides, lengua, gl\xE1ndulas salivales, faringe y laringe (salvo el cart\xEDlago tiroides).</li><li>Ganglios y vasos linf\xE1ticos; la mayor\xEDa de arterias y venas de los miembros y de la cabeza.</li><li>Terceros molares, meninges y algunas circunvoluciones cerebrales.</li><li>Anatom\xEDa femenina: el modelo es de un \xFAnico individuo var\xF3n, por lo que hay variaci\xF3n anat\xF3mica normal entre personas.</li></ul>
-        <p>Licencia: los datos se distribuyen bajo <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/deed.es" target="_blank" rel="noopener">CC BY-SA 2.1 Jap\xF3n</a>; este visor y sus mallas derivadas se comparten con la misma licencia.</p>
+        <p>Licencia: los datos se distribuyen bajo <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/deed.es" target="_blank" rel="noopener">CC BY-SA 2.1 Jap\xF3n</a>; las mallas derivadas y las fichas de este visor se comparten bajo <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.es" target="_blank" rel="noopener">CC BY-SA 4.0</a>, y el c\xF3digo bajo licencia MIT.</p>
+        <p><b>Uso educativo, no cl\xEDnico.</b> Este atlas es un material de estudio: no sirve para diagn\xF3stico ni para decisiones m\xE9dicas, y sus fichas no han sido revisadas por especialistas.</p>
       </details></div>`;
       return;
     }

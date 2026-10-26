@@ -260,7 +260,8 @@ function renderInfo(){
         <p>Para que funcione en el navegador, las mallas se han simplificado (≈26 millones → ≈3,3 millones de triángulos) sin alterar su posición ni su forma general. La nomenclatura sigue la Terminología Anatómica en español.</p>
         <p><b>Estructuras que el modelo de origen no incluye:</b></p>
         <ul><li>Médula espinal y nervios periféricos (solo el nervio y la vía ópticos).</li><li>Glándula tiroides, lengua, glándulas salivales, faringe y laringe (salvo el cartílago tiroides).</li><li>Ganglios y vasos linfáticos; la mayoría de arterias y venas de los miembros y de la cabeza.</li><li>Terceros molares, meninges y algunas circunvoluciones cerebrales.</li><li>Anatomía femenina: el modelo es de un único individuo varón, por lo que hay variación anatómica normal entre personas.</li></ul>
-        <p>Licencia: los datos se distribuyen bajo <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/deed.es" target="_blank" rel="noopener">CC BY-SA 2.1 Japón</a>; este visor y sus mallas derivadas se comparten con la misma licencia.</p>
+        <p>Licencia: los datos se distribuyen bajo <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/deed.es" target="_blank" rel="noopener">CC BY-SA 2.1 Japón</a>; las mallas derivadas y las fichas de este visor se comparten bajo <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.es" target="_blank" rel="noopener">CC BY-SA 4.0</a>, y el código bajo licencia MIT.</p>
+        <p><b>Uso educativo, no clínico.</b> Este atlas es un material de estudio: no sirve para diagnóstico ni para decisiones médicas, y sus fichas no han sido revisadas por especialistas.</p>
       </details></div>`;
     return;
   }
