@@ -4,6 +4,8 @@ Atlas 3D interactivo del cuerpo humano para uso educativo. Incluye 934 estructur
 
 ## Cómo usarlo
 
+**Pruébalo en línea:** https://anatomia.alexisparron.com (la versión desplegada añade la analítica del sitio; el código de este repositorio no incluye ningún rastreador).
+
 1. Descomprime el zip.
 2. Abre `index.html` con doble clic en cualquier navegador moderno (Chrome, Firefox, Edge, Safari).
 
