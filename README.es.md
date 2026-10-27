@@ -2,7 +2,7 @@
 
 🇬🇧 [English version](README.md)
 
-Atlas 3D interactivo del cuerpo humano para uso educativo. Incluye 934 estructuras anatómicas en 11 sistemas, con capas que se pueden activar y desactivar, opacidad por sistema, búsqueda y una ficha en español de cada estructura.
+Atlas 3D interactivo del cuerpo humano para uso educativo. Incluye 934 estructuras anatómicas en 11 sistemas, con capas que se pueden activar y desactivar, opacidad por sistema, búsqueda y una ficha de cada estructura. **Disponible en español e inglés**: el idioma se elige según el navegador y se cambia con el botón ES/EN (o con `?lang=es`). Las fichas en inglés son una traducción de las originales en español y no han sido revisadas por especialistas.
 
 ## Cómo usarlo
 
@@ -32,7 +32,9 @@ Para publicarlo en la web basta con subir la carpeta tal cual a cualquier alojam
 | `package.json` | Dependencias y comando para regenerar `app.js` |
 | `herramientas/` | Scripts que prepararon las mallas y las fichas (ver `herramientas/LEEME.md`) |
 | `fonts/` | Tipografías en local con sus licencias OFL |
-| `data/anatomia.js` | Fichas, nombres y organización por sistemas |
+| `src/i18n.js` | Textos de la interfaz por idioma |
+| `data/anatomia.js` | Metadatos de geometría y fichas en español, nombres y organización por sistemas |
+| `data/anatomia.en.js` | Capa de traducción al inglés de las fichas (se carga a demanda) |
 | `models/*.js` | Mallas 3D (glTF binario comprimido con meshoptimizer, en base64) |
 | `LICENSE` | Licencia MIT del código (copia de `LICENSE-codigo.txt`, para que GitHub la detecte) |
 | `LICENSE-codigo.txt` | Licencia MIT del código |

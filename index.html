@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Atlas 3D interactivo del cuerpo humano (BodyParts3D) con capas y fichas en español.">
+<meta name="description" data-i18n-attr="content:metaDesc" content="Atlas 3D interactivo del cuerpo humano (BodyParts3D) con capas y fichas en español.">
 <title>Anatomía en capas</title>
 <link rel="stylesheet" href="fonts/fonts.css">
 <style>
@@ -69,7 +69,7 @@ button{font:inherit;color:inherit}
 .eye[aria-pressed="false"]{color:var(--dim);opacity:.6}
 .oprow{display:flex;align-items:center;gap:8px;padding:0 8px 8px 34px}
 .oprow label{font-size:11px;color:var(--dim);width:52px}
-.oprow output{font:11px var(--mono);color:var(--mut);width:34px;text-align:right;font-variant-numeric:tabular-nums}
+.oprow output{font:11px var(--mono);color:var(--mut);width:40px;white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
 input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:18px;background:transparent;cursor:pointer}
 input[type=range]::-webkit-slider-runnable-track{height:3px;border-radius:3px;background:linear-gradient(90deg,var(--c,#aaa) var(--p,100%),var(--line2) var(--p,100%))}
 input[type=range]::-moz-range-track{height:3px;border-radius:3px;background:linear-gradient(90deg,var(--c,#aaa) var(--p,100%),var(--line2) var(--p,100%))}
@@ -171,33 +171,34 @@ details.about a{color:var(--acc)}
 
 <header class="top">
   <div class="brand">
-    <h1>Anatomía <em>en capas</em></h1>
+    <h1 data-i18n-html="brand">Anatomía <em>en capas</em></h1>
     <p id="stats">Atlas 3D del cuerpo humano · varón adulto · datos BodyParts3D</p>
   </div>
-  <nav class="views" aria-label="Vistas">
-    <button class="chipbtn" data-view="front">Anterior</button>
-    <button class="chipbtn" data-view="back">Posterior</button>
-    <button class="chipbtn" data-view="right">Lateral dcho.</button>
-    <button class="chipbtn" data-view="left">Lateral izq.</button>
-    <button class="chipbtn" data-view="top">Superior</button>
-    <button class="chipbtn" id="spin" aria-pressed="false">Girar</button>
-    <button class="chipbtn" id="reset">Restablecer</button>
+  <nav class="views" aria-label="Vistas" data-i18n-attr="aria-label:views">
+    <button class="chipbtn" data-view="front" data-i18n="front">Anterior</button>
+    <button class="chipbtn" data-view="back" data-i18n="back">Posterior</button>
+    <button class="chipbtn" data-view="right" data-i18n="right">Lateral dcho.</button>
+    <button class="chipbtn" data-view="left" data-i18n="left">Lateral izq.</button>
+    <button class="chipbtn" data-view="top" data-i18n="top">Superior</button>
+    <button class="chipbtn" id="spin" aria-pressed="false" data-i18n="spin">Girar</button>
+    <button class="chipbtn" id="reset" data-i18n="reset">Restablecer</button>
+    <button class="chipbtn" id="lang" aria-label="Idioma" data-i18n-attr="aria-label:langLabel"></button>
   </nav>
 </header>
 
-<aside class="panel show" id="left" aria-label="Capas y sistemas">
+<aside class="panel show" id="left" aria-label="Capas y sistemas" data-i18n-attr="aria-label:panelLayers">
   <div class="phead">
     <div class="search">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <input id="q" type="search" placeholder="Buscar estructura (p. ej. «fémur», «hígado»)" autocomplete="off" aria-label="Buscar estructura">
+      <input id="q" type="search" placeholder="Buscar estructura (p. ej. «fémur», «hígado»)" autocomplete="off" aria-label="Buscar estructura" data-i18n-attr="placeholder:searchPh;aria-label:search">
     </div>
     <div>
-      <div class="eyebrow" style="margin-bottom:7px">Pelar capas</div>
-      <div class="peel" role="group" aria-label="Pelar capas">
-        <button data-peel="0" aria-pressed="true">Todo</button>
-        <button data-peel="1" aria-pressed="false">Sin piel</button>
-        <button data-peel="2" aria-pressed="false">Sin músculo</button>
-        <button data-peel="3" aria-pressed="false">Vísceras</button>
+      <div class="eyebrow" style="margin-bottom:7px" data-i18n="peel">Pelar capas</div>
+      <div class="peel" role="group" aria-label="Pelar capas" data-i18n-attr="aria-label:peel">
+        <button data-peel="0" aria-pressed="true" data-i18n="peelAll">Todo</button>
+        <button data-peel="1" aria-pressed="false" data-i18n="peelSkin">Sin piel</button>
+        <button data-peel="2" aria-pressed="false" data-i18n="peelMuscle">Sin músculo</button>
+        <button data-peel="3" aria-pressed="false" data-i18n="peelViscera">Vísceras</button>
       </div>
     </div>
   </div>
@@ -207,18 +208,18 @@ details.about a{color:var(--acc)}
   </div>
 </aside>
 
-<aside class="panel" id="right" aria-label="Ficha de la estructura">
+<aside class="panel" id="right" aria-label="Ficha de la estructura" data-i18n-attr="aria-label:panelCard">
   <div class="pbody" style="padding:0"><div id="info"></div></div>
 </aside>
 
-<div class="tabs" role="group" aria-label="Paneles">
-  <button data-tab="none" aria-pressed="true">Modelo</button>
-  <button data-tab="left" aria-pressed="false">Capas</button>
-  <button data-tab="right" aria-pressed="false">Ficha</button>
+<div class="tabs" role="group" aria-label="Paneles" data-i18n-attr="aria-label:tabs">
+  <button data-tab="none" aria-pressed="true" data-i18n="tabModel">Modelo</button>
+  <button data-tab="left" aria-pressed="false" data-i18n="tabLayers">Capas</button>
+  <button data-tab="right" aria-pressed="false" data-i18n="tabCard">Ficha</button>
 </div>
 
-<div id="loader"><div class="lt"><span id="ltxt">Cargando modelo anatómico…</span><span id="lpct">0 %</span></div><div class="bar"><i id="lbar"></i></div><div id="err" hidden></div></div>
-<div class="credit">Modelo 3D: <a href="https://lifesciencedb.jp/bp3d/" target="_blank" rel="noopener">BodyParts3D</a> © DBCLS · <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/deed.es" target="_blank" rel="noopener">CC BY-SA 2.1 JP</a> · adaptación CC BY-SA 4.0 · simplificado para web · uso educativo, no clínico</div>
+<div id="loader"><div class="lt"><span id="ltxt" data-i18n="loading">Cargando modelo anatómico…</span><span id="lpct">0 %</span></div><div class="bar"><i id="lbar"></i></div><div id="err" hidden></div></div>
+<div class="credit" data-i18n-html="credit">Modelo 3D: <a href="https://lifesciencedb.jp/bp3d/" target="_blank" rel="noopener">BodyParts3D</a> © DBCLS · <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/deed.es" target="_blank" rel="noopener">CC BY-SA 2.1 JP</a> · adaptación CC BY-SA 4.0 · simplificado para web · uso educativo, no clínico</div>
 <script src="data/anatomia.js"></script>
 <script src="models/esq.js"></script>
 <script src="models/mus.js"></script>

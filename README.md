@@ -2,7 +2,7 @@
 
 🇪🇸 [Versión en español](README.es.md)
 
-Interactive 3D atlas of the human body for educational use. It includes 934 anatomical structures in 11 systems, with layers you can toggle, per-system opacity, search, and a description card for each structure. **The interface and the cards are in Spanish.**
+Interactive 3D atlas of the human body for educational use. It includes 934 anatomical structures in 11 systems, with layers you can toggle, per-system opacity, search, and a description card for each structure. **Available in Spanish and English**: the language is picked from your browser and can be switched with the ES/EN button (or `?lang=en`). The English cards are a translation of the Spanish originals and have not been reviewed by specialists.
 
 **Try it online:** https://anatomia.alexisparron.com (the deployed version adds the site's analytics; the code in this repository contains no trackers).
 
@@ -32,7 +32,9 @@ To publish it on the web, upload the folder as is to any static host (GitHub Pag
 | `package.json`, `package-lock.json` | Dependencies and build command |
 | `herramientas/` | Python scripts that prepared the meshes and cards (see `herramientas/LEEME.md`, in Spanish) |
 | `fonts/` | Local fonts with their OFL licenses |
-| `data/anatomia.js` | Cards, names and organization by system |
+| `src/i18n.js` | Interface texts per language |
+| `data/anatomia.js` | Geometry metadata and the Spanish cards, names and organization by system |
+| `data/anatomia.en.js` | English translation layer of the cards (loaded on demand) |
 | `models/*.js` | 3D meshes (meshoptimizer-compressed binary glTF, base64) |
 | `LICENSE`, `LICENSE-codigo.txt` | MIT license for the code |
 | `LICENSE-contenido.md` | License for the meshes and texts (CC BY-SA 4.0) |

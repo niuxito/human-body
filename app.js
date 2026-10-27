@@ -360,8 +360,8 @@
       return 0;
     }
   }
-  function lerp(x, y, t) {
-    return (1 - t) * x + t * y;
+  function lerp(x, y, t2) {
+    return (1 - t2) * x + t2 * y;
   }
   function damp(x, y, lambda, dt) {
     return lerp(x, y, 1 - Math.exp(-lambda * dt));
@@ -392,10 +392,10 @@
   }
   function seededRandom(s) {
     if (s !== void 0) _seed = s;
-    let t = _seed += 1831565813;
-    t = Math.imul(t ^ t >>> 15, t | 1);
-    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    let t2 = _seed += 1831565813;
+    t2 = Math.imul(t2 ^ t2 >>> 15, t2 | 1);
+    t2 ^= t2 + Math.imul(t2 ^ t2 >>> 7, t2 | 61);
+    return ((t2 ^ t2 >>> 14) >>> 0) / 4294967296;
   }
   function degToRad(degrees) {
     return degrees * DEG2RAD;
@@ -1370,7 +1370,7 @@
      * @param {number} t - The interpolation factor. A value in the range `[0,1]` will interpolate. A value outside the range `[0,1]` will extrapolate.
      * @see {@link Quaternion#slerp}
      */
-    static slerpFlat(dst, dstOffset, src0, srcOffset0, src1, srcOffset1, t) {
+    static slerpFlat(dst, dstOffset, src0, srcOffset0, src1, srcOffset1, t2) {
       let x0 = src0[srcOffset0 + 0], y0 = src0[srcOffset0 + 1], z0 = src0[srcOffset0 + 2], w0 = src0[srcOffset0 + 3];
       let x1 = src1[srcOffset1 + 0], y1 = src1[srcOffset1 + 1], z1 = src1[srcOffset1 + 2], w1 = src1[srcOffset1 + 3];
       if (w0 !== w1 || x0 !== x1 || y0 !== y1 || z0 !== z1) {
@@ -1382,21 +1382,21 @@
           w1 = -w1;
           dot = -dot;
         }
-        let s = 1 - t;
+        let s = 1 - t2;
         if (dot < 0.9995) {
           const theta = Math.acos(dot);
           const sin = Math.sin(theta);
           s = Math.sin(s * theta) / sin;
-          t = Math.sin(t * theta) / sin;
-          x0 = x0 * s + x1 * t;
-          y0 = y0 * s + y1 * t;
-          z0 = z0 * s + z1 * t;
-          w0 = w0 * s + w1 * t;
+          t2 = Math.sin(t2 * theta) / sin;
+          x0 = x0 * s + x1 * t2;
+          y0 = y0 * s + y1 * t2;
+          z0 = z0 * s + z1 * t2;
+          w0 = w0 * s + w1 * t2;
         } else {
-          x0 = x0 * s + x1 * t;
-          y0 = y0 * s + y1 * t;
-          z0 = z0 * s + z1 * t;
-          w0 = w0 * s + w1 * t;
+          x0 = x0 * s + x1 * t2;
+          y0 = y0 * s + y1 * t2;
+          z0 = z0 * s + z1 * t2;
+          w0 = w0 * s + w1 * t2;
           const f = 1 / Math.sqrt(x0 * x0 + y0 * y0 + z0 * z0 + w0 * w0);
           x0 *= f;
           y0 *= f;
@@ -1692,8 +1692,8 @@
     rotateTowards(q, step) {
       const angle = this.angleTo(q);
       if (angle === 0) return this;
-      const t = Math.min(1, step / angle);
-      this.slerp(q, t);
+      const t2 = Math.min(1, step / angle);
+      this.slerp(q, t2);
       return this;
     }
     /**
@@ -1822,7 +1822,7 @@
      * @param {number} t - The interpolation factor. A value in the range `[0,1]` will interpolate. A value outside the range `[0,1]` will extrapolate.
      * @return {Quaternion} A reference to this quaternion.
      */
-    slerp(qb, t) {
+    slerp(qb, t2) {
       let x = qb._x, y = qb._y, z = qb._z, w = qb._w;
       let dot = this.dot(qb);
       if (dot < 0) {
@@ -1832,22 +1832,22 @@
         w = -w;
         dot = -dot;
       }
-      let s = 1 - t;
+      let s = 1 - t2;
       if (dot < 0.9995) {
         const theta = Math.acos(dot);
         const sin = Math.sin(theta);
         s = Math.sin(s * theta) / sin;
-        t = Math.sin(t * theta) / sin;
-        this._x = this._x * s + x * t;
-        this._y = this._y * s + y * t;
-        this._z = this._z * s + z * t;
-        this._w = this._w * s + w * t;
+        t2 = Math.sin(t2 * theta) / sin;
+        this._x = this._x * s + x * t2;
+        this._y = this._y * s + y * t2;
+        this._z = this._z * s + z * t2;
+        this._w = this._w * s + w * t2;
         this._onChangeCallback();
       } else {
-        this._x = this._x * s + x * t;
-        this._y = this._y * s + y * t;
-        this._z = this._z * s + z * t;
-        this._w = this._w * s + w * t;
+        this._x = this._x * s + x * t2;
+        this._y = this._y * s + y * t2;
+        this._z = this._z * s + z * t2;
+        this._w = this._w * s + w * t2;
         this.normalize();
       }
       return this;
@@ -1861,8 +1861,8 @@
      * @param {number} t - The interpolation factor in the closed interval `[0, 1]`.
      * @return {Quaternion} A reference to this quaternion.
      */
-    slerpQuaternions(qa, qb, t) {
-      return this.copy(qa).slerp(qb, t);
+    slerpQuaternions(qa, qb, t2) {
+      return this.copy(qa).slerp(qb, t2);
     }
     /**
      * Sets this quaternion to a uniformly random, normalized quaternion.
@@ -5838,9 +5838,9 @@
     makeRotationAxis(axis, angle) {
       const c = Math.cos(angle);
       const s = Math.sin(angle);
-      const t = 1 - c;
+      const t2 = 1 - c;
       const x = axis.x, y = axis.y, z = axis.z;
-      const tx = t * x, ty = t * y;
+      const tx = t2 * x, ty = t2 * y;
       this.set(
         tx * x + c,
         tx * y - s * z,
@@ -5852,7 +5852,7 @@
         0,
         tx * z - s * y,
         ty * z + s * x,
-        t * z * z + c,
+        t2 * z * z + c,
         0,
         0,
         0,
@@ -7905,12 +7905,12 @@
   };
   var _hslA = { h: 0, s: 0, l: 0 };
   var _hslB = { h: 0, s: 0, l: 0 };
-  function hue2rgb(p, q, t) {
-    if (t < 0) t += 1;
-    if (t > 1) t -= 1;
-    if (t < 1 / 6) return p + (q - p) * 6 * t;
-    if (t < 1 / 2) return q;
-    if (t < 2 / 3) return p + (q - p) * 6 * (2 / 3 - t);
+  function hue2rgb(p, q, t2) {
+    if (t2 < 0) t2 += 1;
+    if (t2 > 1) t2 -= 1;
+    if (t2 < 1 / 6) return p + (q - p) * 6 * t2;
+    if (t2 < 1 / 2) return q;
+    if (t2 < 2 / 3) return p + (q - p) * 6 * (2 / 3 - t2);
     return p;
   }
   var Color = class {
@@ -10686,10 +10686,10 @@
       function handleVertex(v) {
         n.fromBufferAttribute(normalAttribute, v);
         n2.copy(n);
-        const t = tan1[v];
-        tmp.copy(t);
-        tmp.sub(n.multiplyScalar(n.dot(t))).normalize();
-        tmp2.crossVectors(n2, t);
+        const t2 = tan1[v];
+        tmp.copy(t2);
+        tmp.sub(n.multiplyScalar(n.dot(t2))).normalize();
+        tmp2.crossVectors(n2, t2);
         const test = tmp2.dot(tan2[v]);
         const w = test < 0 ? -1 : 1;
         tangentAttribute.setXYZW(v, tmp.x, tmp.y, tmp.z, w);
@@ -11620,11 +11620,11 @@
         }
         return null;
       }
-      const t = -(line.start.dot(this.normal) + this.constant) / denominator;
-      if (clampToLine === true && (t < 0 || t > 1)) {
+      const t2 = -(line.start.dot(this.normal) + this.constant) / denominator;
+      if (clampToLine === true && (t2 < 0 || t2 > 1)) {
         return null;
       }
-      return target.copy(line.start).addScaledVector(direction, t);
+      return target.copy(line.start).addScaledVector(direction, t2);
     }
     /**
      * Returns `true` if the given line segment intersects with (passes through) the plane.
@@ -12525,8 +12525,8 @@
      * @param {Vector3} target - The target vector that is used to store the method's result.
      * @return {Vector3} A position on the ray.
      */
-    at(t, target) {
-      return target.copy(this.origin).addScaledVector(this.direction, t);
+    at(t2, target) {
+      return target.copy(this.origin).addScaledVector(this.direction, t2);
     }
     /**
      * Adjusts the direction of the ray to point at the given vector in world space.
@@ -12544,8 +12544,8 @@
      * @param {number} t - The distance along the ray to interpolate.
      * @return {Ray} A reference to this ray.
      */
-    recast(t) {
-      this.origin.copy(this.at(t, _vector$7));
+    recast(t2) {
+      this.origin.copy(this.at(t2, _vector$7));
       return this;
     }
     /**
@@ -12702,8 +12702,8 @@
         }
         return null;
       }
-      const t = -(this.origin.dot(plane.normal) + plane.constant) / denominator;
-      return t >= 0 ? t : null;
+      const t2 = -(this.origin.dot(plane.normal) + plane.constant) / denominator;
+      return t2 >= 0 ? t2 : null;
     }
     /**
      * Intersects this ray with the given plane, returning the intersection
@@ -12714,11 +12714,11 @@
      * @return {?Vector3} The intersection point.
      */
     intersectPlane(plane, target) {
-      const t = this.distanceToPlane(plane);
-      if (t === null) {
+      const t2 = this.distanceToPlane(plane);
+      if (t2 === null) {
         return null;
       }
-      return this.at(t, target);
+      return this.at(t2, target);
     }
     /**
      * Returns `true` if this ray intersects with the given plane.
@@ -15700,17 +15700,17 @@
      * @param {number} t - The interpolation factor.
      * @return {TypedArray} The result buffer.
      */
-    evaluate(t) {
+    evaluate(t2) {
       const pp = this.parameterPositions;
       let i1 = this._cachedIndex, t1 = pp[i1], t0 = pp[i1 - 1];
       validate_interval: {
         seek: {
           let right;
           linear_scan: {
-            forward_scan: if (!(t < t1)) {
+            forward_scan: if (!(t2 < t1)) {
               for (let giveUpAt = i1 + 2; ; ) {
                 if (t1 === void 0) {
-                  if (t < t0) break forward_scan;
+                  if (t2 < t0) break forward_scan;
                   i1 = pp.length;
                   this._cachedIndex = i1;
                   return this.copySampleValue_(i1 - 1);
@@ -15718,16 +15718,16 @@
                 if (i1 === giveUpAt) break;
                 t0 = t1;
                 t1 = pp[++i1];
-                if (t < t1) {
+                if (t2 < t1) {
                   break seek;
                 }
               }
               right = pp.length;
               break linear_scan;
             }
-            if (!(t >= t0)) {
+            if (!(t2 >= t0)) {
               const t1global = pp[1];
-              if (t < t1global) {
+              if (t2 < t1global) {
                 i1 = 2;
                 t0 = t1global;
               }
@@ -15739,7 +15739,7 @@
                 if (i1 === giveUpAt) break;
                 t1 = t0;
                 t0 = pp[--i1 - 1];
-                if (t >= t0) {
+                if (t2 >= t0) {
                   break seek;
                 }
               }
@@ -15751,7 +15751,7 @@
           }
           while (i1 < right) {
             const mid = i1 + right >>> 1;
-            if (t < pp[mid]) {
+            if (t2 < pp[mid]) {
               right = mid;
             } else {
               i1 = mid + 1;
@@ -15772,7 +15772,7 @@
         this._cachedIndex = i1;
         this.intervalChanged_(i1, t0, t1);
       }
-      return this.interpolate_(i1, t0, t, t1);
+      return this.interpolate_(i1, t0, t2, t1);
     }
     /**
      * Returns the interpolation settings.
@@ -15877,8 +15877,8 @@
       this._offsetPrev = iPrev * stride;
       this._offsetNext = iNext * stride;
     }
-    interpolate_(i1, t0, t, t1) {
-      const result = this.resultBuffer, values = this.sampleValues, stride = this.valueSize, o1 = i1 * stride, o0 = o1 - stride, oP = this._offsetPrev, oN = this._offsetNext, wP = this._weightPrev, wN = this._weightNext, p = (t - t0) / (t1 - t0), pp = p * p, ppp = pp * p;
+    interpolate_(i1, t0, t2, t1) {
+      const result = this.resultBuffer, values = this.sampleValues, stride = this.valueSize, o1 = i1 * stride, o0 = o1 - stride, oP = this._offsetPrev, oN = this._offsetNext, wP = this._weightPrev, wN = this._weightNext, p = (t2 - t0) / (t1 - t0), pp = p * p, ppp = pp * p;
       const sP = -wP * ppp + 2 * wP * pp - wP * p;
       const s0 = (1 + wP) * ppp + (-1.5 - 2 * wP) * pp + (-0.5 + wP) * p + 1;
       const s1 = (-1 - wN) * ppp + (1.5 + wN) * pp + 0.5 * p;
@@ -15901,8 +15901,8 @@
     constructor(parameterPositions, sampleValues, sampleSize, resultBuffer) {
       super(parameterPositions, sampleValues, sampleSize, resultBuffer);
     }
-    interpolate_(i1, t0, t, t1) {
-      const result = this.resultBuffer, values = this.sampleValues, stride = this.valueSize, offset1 = i1 * stride, offset0 = offset1 - stride, weight1 = (t - t0) / (t1 - t0), weight0 = 1 - weight1;
+    interpolate_(i1, t0, t2, t1) {
+      const result = this.resultBuffer, values = this.sampleValues, stride = this.valueSize, offset1 = i1 * stride, offset0 = offset1 - stride, weight1 = (t2 - t0) / (t1 - t0), weight0 = 1 - weight1;
       for (let i = 0; i !== stride; ++i) {
         result[i] = values[offset0 + i] * weight0 + values[offset1 + i] * weight1;
       }
@@ -15926,7 +15926,7 @@
     }
   };
   var BezierInterpolant = class extends Interpolant {
-    interpolate_(i1, t0, t, t1) {
+    interpolate_(i1, t0, t2, t1) {
       const result = this.resultBuffer;
       const values = this.sampleValues;
       const stride = this.valueSize;
@@ -15935,7 +15935,7 @@
       const inTangents = this.inTangents;
       const outTangents = this.outTangents;
       if (!inTangents || !outTangents) {
-        const weight1 = (t - t0) / (t1 - t0);
+        const weight1 = (t2 - t0) / (t1 - t0);
         const weight0 = 1 - weight1;
         for (let i = 0; i !== stride; ++i) {
           result[i] = values[offset0 + i] * weight0 + values[offset1 + i] * weight1;
@@ -15953,7 +15953,7 @@
         const inTangentOffset = i1 * tangentStride + i * 2;
         const c1x = inTangents[inTangentOffset];
         const c1y = inTangents[inTangentOffset + 1];
-        const s = solveBezierParameter(t, t0, c0x, c1x, t1);
+        const s = solveBezierParameter(t2, t0, c0x, c1x, t1);
         result[i] = cubicBezier(s, v0, c0y, c1y, v1);
       }
       return result;
@@ -16394,8 +16394,8 @@
     constructor(parameterPositions, sampleValues, sampleSize, resultBuffer) {
       super(parameterPositions, sampleValues, sampleSize, resultBuffer);
     }
-    interpolate_(i1, t0, t, t1) {
-      const result = this.resultBuffer, values = this.sampleValues, stride = this.valueSize, alpha = (t - t0) / (t1 - t0);
+    interpolate_(i1, t0, t2, t1) {
+      const result = this.resultBuffer, values = this.sampleValues, stride = this.valueSize, alpha = (t2 - t0) / (t1 - t0);
       let offset = i1 * stride;
       for (let end = offset + stride; offset !== end; offset += 4) {
         Quaternion.slerpFlat(result, 0, values, offset - stride, values, offset, alpha);
@@ -26790,9 +26790,9 @@
               _htmlTextures.add(texture);
               canvas.onpaint = (event) => {
                 const changed = event.changedElements;
-                for (const t of _htmlTextures) {
-                  if (changed.includes(t.image)) {
-                    t.needsUpdate = true;
+                for (const t2 of _htmlTextures) {
+                  if (changed.includes(t2.image)) {
+                    t2.needsUpdate = true;
                   }
                 }
               };
@@ -32920,14 +32920,14 @@ void main() {
       }
       return result;
     }
-    interpolate_(i1, t0, t, t1) {
+    interpolate_(i1, t0, t2, t1) {
       const result = this.resultBuffer;
       const values = this.sampleValues;
       const stride = this.valueSize;
       const stride2 = stride * 2;
       const stride3 = stride * 3;
       const td = t1 - t0;
-      const p = (t - t0) / td;
+      const p = (t2 - t0) / td;
       const pp = p * p;
       const ppp = pp * p;
       const offset1 = i1 * stride3;
@@ -32948,8 +32948,8 @@ void main() {
   };
   var _quaternion = new Quaternion();
   var GLTFCubicSplineQuaternionInterpolant = class extends GLTFCubicSplineInterpolant {
-    interpolate_(i1, t0, t, t1) {
-      const result = super.interpolate_(i1, t0, t, t1);
+    interpolate_(i1, t0, t2, t1) {
+      const result = super.interpolate_(i1, t0, t2, t1);
       _quaternion.fromArray(result).normalize().toArray(result);
       return result;
     }
@@ -34822,12 +34822,176 @@ void main() {
     return material;
   }
 
+  // src/i18n.js
+  var LANGS = ["es", "en"];
+  var LANG_NAMES = { es: "Espa\xF1ol", en: "English" };
+  function detectLang() {
+    const q = new URLSearchParams(location.search).get("lang");
+    if (LANGS.includes(q)) return q;
+    try {
+      const s = localStorage.getItem("lang");
+      if (LANGS.includes(s)) return s;
+    } catch (e) {
+    }
+    const nav = (navigator.languages || [navigator.language || "es"]).map((l) => l.slice(0, 2).toLowerCase());
+    return nav.find((l) => LANGS.includes(l)) || "en";
+  }
+  var STR = {
+    es: {
+      title: "Anatom\xEDa en capas",
+      metaDesc: "Atlas 3D interactivo del cuerpo humano (BodyParts3D) con capas y fichas en espa\xF1ol.",
+      brand: "Anatom\xEDa <em>en capas</em>",
+      langLabel: "Idioma",
+      views: "Vistas",
+      front: "Anterior",
+      back: "Posterior",
+      right: "Lateral dcho.",
+      left: "Lateral izq.",
+      top: "Superior",
+      spin: "Girar",
+      reset: "Restablecer",
+      panelLayers: "Capas y sistemas",
+      panelCard: "Ficha de la estructura",
+      tabs: "Paneles",
+      tabModel: "Modelo",
+      tabLayers: "Capas",
+      tabCard: "Ficha",
+      searchPh: "Buscar estructura (p. ej. \xABf\xE9mur\xBB, \xABh\xEDgado\xBB)",
+      search: "Buscar estructura",
+      peel: "Pelar capas",
+      peelAll: "Todo",
+      peelSkin: "Sin piel",
+      peelMuscle: "Sin m\xFAsculo",
+      peelViscera: "V\xEDsceras",
+      loading: "Cargando modelo anat\xF3mico\u2026",
+      credit: 'Modelo 3D: <a href="https://lifesciencedb.jp/bp3d/" target="_blank" rel="noopener">BodyParts3D</a> \xA9 DBCLS \xB7 <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/deed.es" target="_blank" rel="noopener">CC BY-SA 2.1 JP</a> \xB7 adaptaci\xF3n CC BY-SA 4.0 \xB7 simplificado para web \xB7 uso educativo, no cl\xEDnico',
+      sideD: "Lado derecho",
+      sideI: "Lado izquierdo",
+      sideDs: "dcho.",
+      sideIs: "izq.",
+      stats: (n, c, s) => `${n} estructuras \xB7 ${c} fichas \xB7 ${s} sistemas \xB7 var\xF3n adulto`,
+      systemReady: (name, d, total) => `Sistema ${name.toLowerCase()} listo (${d}/${total})`,
+      modelDone: "Modelo completo",
+      errSystem: (name) => `No se pudo cargar el sistema ${name}.`,
+      errData: (msg) => `Error al cargar los datos: ${msg}`,
+      toggleSys: (name) => `Mostrar u ocultar ${name}`,
+      showGroup: (name) => `Mostrar ${name}`,
+      opacity: "Opacidad",
+      noResults: "Sin resultados",
+      howTo: "C\xF3mo usarlo",
+      selectAny: "Selecciona cualquier estructura del cuerpo",
+      how1: "Arrastra para girar, rueda o pellizca para acercar y clic derecho para desplazar.",
+      how2: "Haz clic en un \xF3rgano, hueso o m\xFAsculo para ver su nombre y su ficha.",
+      how3: "Usa <b>Pelar capas</b> o el ojo de cada sistema para retirar tejidos; ajusta su opacidad para ver a trav\xE9s.",
+      how4: "Atajos: <kbd>Esc</kbd> deseleccionar \xB7 <kbd>F</kbd> enfocar \xB7 <kbd>H</kbd> ocultar \xB7 <kbd>I</kbd> aislar",
+      systemsIncluded: "Sistemas incluidos",
+      aboutTitle: "Acerca del modelo y su rigor",
+      about: `<p>La geometr\xEDa procede de <a href="https://lifesciencedb.jp/bp3d/" target="_blank" rel="noopener">BodyParts3D</a> (Database Center for Life Science, Jap\xF3n), un atlas construido a partir de im\xE1genes de resonancia magn\xE9tica de un var\xF3n adulto y etiquetado con los identificadores de la <i>Foundational Model of Anatomy</i> (FMA). Cada malla conserva su identificador original, visible en la ficha.</p>
+        <p>Para que funcione en el navegador, las mallas se han simplificado (\u224826 millones \u2192 \u22483,3 millones de tri\xE1ngulos) sin alterar su posici\xF3n ni su forma general. La nomenclatura sigue la Terminolog\xEDa Anat\xF3mica en espa\xF1ol.</p>
+        <p><b>Estructuras que el modelo de origen no incluye:</b></p>
+        <ul><li>M\xE9dula espinal y nervios perif\xE9ricos (solo el nervio y la v\xEDa \xF3pticos).</li><li>Gl\xE1ndula tiroides, lengua, gl\xE1ndulas salivales, faringe y laringe (salvo el cart\xEDlago tiroides).</li><li>Ganglios y vasos linf\xE1ticos; la mayor\xEDa de arterias y venas de los miembros y de la cabeza.</li><li>Terceros molares, meninges y algunas circunvoluciones cerebrales.</li><li>Anatom\xEDa femenina: el modelo es de un \xFAnico individuo var\xF3n, por lo que hay variaci\xF3n anat\xF3mica normal entre personas.</li></ul>
+        <p>Licencia: los datos se distribuyen bajo <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/deed.es" target="_blank" rel="noopener">CC BY-SA 2.1 Jap\xF3n</a>; las mallas derivadas y las fichas de este visor se comparten bajo <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.es" target="_blank" rel="noopener">CC BY-SA 4.0</a>, y el c\xF3digo bajo licencia MIT.</p>
+        <p><b>Uso educativo, no cl\xEDnico.</b> Este atlas es un material de estudio: no sirve para diagn\xF3stico ni para decisiones m\xE9dicas, y sus fichas no han sido revisadas por especialistas.</p>`,
+      focus: "Enfocar",
+      isolate: "Aislar",
+      showAll: "Ver todo",
+      hide: "Ocultar",
+      dimRest: "Atenuar el resto del cuerpo",
+      source: (id, en) => `Fuente: BodyParts3D \xB7 ${id}<br>T\xE9rmino original: ${en}`
+    },
+    en: {
+      title: "Layered Anatomy",
+      metaDesc: "Interactive 3D atlas of the human body (BodyParts3D) with layers and anatomical cards.",
+      brand: "Layered <em>anatomy</em>",
+      langLabel: "Language",
+      views: "Views",
+      front: "Anterior",
+      back: "Posterior",
+      right: "Right lateral",
+      left: "Left lateral",
+      top: "Superior",
+      spin: "Rotate",
+      reset: "Reset",
+      panelLayers: "Layers and systems",
+      panelCard: "Structure card",
+      tabs: "Panels",
+      tabModel: "Model",
+      tabLayers: "Layers",
+      tabCard: "Card",
+      searchPh: 'Search structure (e.g. "femur", "liver")',
+      search: "Search structure",
+      peel: "Peel layers",
+      peelAll: "All",
+      peelSkin: "No skin",
+      peelMuscle: "No muscle",
+      peelViscera: "Viscera",
+      loading: "Loading anatomical model\u2026",
+      credit: '3D model: <a href="https://lifesciencedb.jp/bp3d/" target="_blank" rel="noopener">BodyParts3D</a> \xA9 DBCLS \xB7 <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/deed.en" target="_blank" rel="noopener">CC BY-SA 2.1 JP</a> \xB7 adaptation CC BY-SA 4.0 \xB7 simplified for the web \xB7 educational use, not clinical',
+      sideD: "Right side",
+      sideI: "Left side",
+      sideDs: "R",
+      sideIs: "L",
+      stats: (n, c, s) => `${n} structures \xB7 ${c} cards \xB7 ${s} systems \xB7 adult male`,
+      systemReady: (name, d, total) => `${name} system ready (${d}/${total})`,
+      modelDone: "Model complete",
+      errSystem: (name) => `Could not load the ${name} system.`,
+      errData: (msg) => `Error loading data: ${msg}`,
+      toggleSys: (name) => `Show or hide ${name}`,
+      showGroup: (name) => `Show ${name}`,
+      opacity: "Opacity",
+      noResults: "No results",
+      howTo: "How to use it",
+      selectAny: "Select any structure of the body",
+      how1: "Drag to rotate, scroll or pinch to zoom, and right-click to pan.",
+      how2: "Click an organ, bone or muscle to see its name and its card.",
+      how3: "Use <b>Peel layers</b> or the eye on each system to remove tissues; adjust opacity to see through.",
+      how4: "Shortcuts: <kbd>Esc</kbd> deselect \xB7 <kbd>F</kbd> focus \xB7 <kbd>H</kbd> hide \xB7 <kbd>I</kbd> isolate",
+      systemsIncluded: "Systems included",
+      aboutTitle: "About the model and its rigor",
+      about: `<p>The geometry comes from <a href="https://lifesciencedb.jp/bp3d/" target="_blank" rel="noopener">BodyParts3D</a> (Database Center for Life Science, Japan), an atlas built from magnetic resonance images of an adult male and labelled with <i>Foundational Model of Anatomy</i> (FMA) identifiers. Each mesh keeps its original identifier, shown on its card.</p>
+        <p>To run in the browser, the meshes were simplified (\u224826 million \u2192 \u22483.3 million triangles) without altering their position or overall shape. Nomenclature follows the Terminologia Anatomica. The cards were written in Spanish; the English cards are a translation that has not been reviewed by specialists.</p>
+        <p><b>Structures the source model does not include:</b></p>
+        <ul><li>Spinal cord and peripheral nerves (only the optic nerve and pathway).</li><li>Thyroid gland, tongue, salivary glands, pharynx and larynx (except the thyroid cartilage).</li><li>Lymph nodes and lymphatic vessels; most arteries and veins of the limbs and head.</li><li>Third molars, meninges and some cerebral gyri.</li><li>Female anatomy: the model is a single male individual, so normal anatomical variation between people applies.</li></ul>
+        <p>License: the data are distributed under <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/deed.en" target="_blank" rel="noopener">CC BY-SA 2.1 Japan</a>; the derived meshes and the cards of this viewer are shared under <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.en" target="_blank" rel="noopener">CC BY-SA 4.0</a>, and the code under the MIT license.</p>
+        <p><b>Educational use, not clinical.</b> This atlas is study material: it is not for diagnosis or medical decisions, and its cards have not been reviewed by specialists.</p>`,
+      focus: "Focus",
+      isolate: "Isolate",
+      showAll: "Show all",
+      hide: "Hide",
+      dimRest: "Dim the rest of the body",
+      source: (id, en) => `Source: BodyParts3D \xB7 ${id}<br>Original term: ${en}`
+    }
+  };
+
   // src/visor.js
   var $ = (s) => document.querySelector(s);
   var esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
   var norm = (s) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-  var SIDE = { D: "Lado derecho", I: "Lado izquierdo", "": "" };
-  var SIDE_SHORT = { D: "dcho.", I: "izq.", "": "" };
+  var lang = detectLang();
+  var t = (k, ...a) => {
+    const v = STR[lang][k] ?? STR.es[k];
+    return typeof v === "function" ? v(...a) : v;
+  };
+  var SIDE = { get D() {
+    return t("sideD");
+  }, get I() {
+    return t("sideI");
+  }, "": "" };
+  var SIDE_SHORT = { get D() {
+    return t("sideDs");
+  }, get I() {
+    return t("sideIs");
+  }, "": "" };
+  function loadOverlay(l) {
+    if (l === "es" || (window.ANAT_I18N || {})[l]) return Promise.resolve();
+    return new Promise((ok, fail) => {
+      const sc = document.createElement("script");
+      sc.src = `data/anatomia.${l}.js`;
+      sc.onload = ok;
+      sc.onerror = fail;
+      document.head.appendChild(sc);
+    });
+  }
   var stage = $("#stage");
   var renderer = new WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -34882,7 +35046,7 @@ void main() {
       pts.push(new Vector3(0, cm / 100, 0), new Vector3(-w, cm / 100, 0));
     }
     ruler.add(new LineSegments(new BufferGeometry().setFromPoints(pts), new LineBasicMaterial({ color: 9413553, transparent: true, opacity: 0.55 })));
-    const txt = (t, y, big) => {
+    const txt = (t2, y, big) => {
       const cv = document.createElement("canvas");
       cv.width = 256;
       cv.height = 64;
@@ -34890,7 +35054,7 @@ void main() {
       x.font = `${big ? 500 : 400} 34px "IBM Plex Mono", monospace`;
       x.fillStyle = big ? "#f2c46d" : "#9fb1bd";
       x.textBaseline = "middle";
-      x.fillText(t, 6, 32);
+      x.fillText(t2, 6, 32);
       const s = new Sprite(new SpriteMaterial({ map: new CanvasTexture(cv), transparent: true, depthWrite: false }));
       s.scale.set(0.16, 0.04, 1);
       s.position.set(0.09, y, 0);
@@ -34908,6 +35072,8 @@ void main() {
   var SYS = {};
   var CONC;
   var PARTS = {};
+  var BASE_SYS;
+  var BASE_CONC;
   var matCache = /* @__PURE__ */ new Map();
   var sysState = {};
   var hiddenGroups = /* @__PURE__ */ new Set();
@@ -34972,7 +35138,7 @@ void main() {
     const P = PARTS[id];
     const c = CONC[P.p.c];
     if (isolated) return isolated.has(id);
-    return sysState[c.s].on && !hiddenGroups.has(c.s + "|" + c.g) && !hiddenParts.has(id);
+    return sysState[c.s].on && !hiddenGroups.has(c.s + "|" + c.gk) && !hiddenParts.has(id);
   }
   function applyVisibility() {
     for (const id in PARTS) {
@@ -34987,14 +35153,21 @@ void main() {
   var progress = {};
   async function boot() {
     DATA2 = window.ANAT_DATA;
-    CONC = DATA2.concepts;
-    DATA2.systems.forEach((s) => {
-      SYS[s.k] = s;
+    BASE_SYS = DATA2.systems;
+    BASE_CONC = DATA2.concepts;
+    BASE_CONC.forEach((c) => c.gk = c.g);
+    BASE_SYS.forEach((s) => {
       sysState[s.k] = { on: true, op: s.k === "teg" ? 0.28 : 1 };
     });
     DATA2.parts.forEach((p) => PARTS[p.id] = { p, mesh: null });
-    const nConc = new Set(DATA2.parts.map((p) => p.c)).size;
-    $("#stats").textContent = `${DATA2.parts.length} estructuras \xB7 ${nConc} fichas \xB7 ${DATA2.systems.length} sistemas \xB7 var\xF3n adulto`;
+    try {
+      await loadOverlay(lang);
+    } catch (e) {
+      console.warn("Sin traducci\xF3n para", lang);
+      lang = "es";
+    }
+    localize();
+    applyStatic();
     buildSystemsUI();
     renderInfo();
     applyOpacity();
@@ -35033,29 +35206,96 @@ void main() {
         progress[sk] = DATA2.files[sk].bytes;
         upd();
         done++;
-        $("#ltxt").textContent = `Sistema ${SYS[sk].n.toLowerCase()} listo (${done}/${ORDER.length})`;
+        $("#ltxt").textContent = t("systemReady", SYS[sk].n, done, ORDER.length);
       } catch (err) {
         $("#err").hidden = false;
-        $("#err").textContent = "No se pudo cargar el sistema " + SYS[sk].n + ".";
+        $("#err").textContent = t("errSystem", SYS[sk].n);
         console.error(err);
       }
     }));
     applyOpacity();
-    $("#ltxt").textContent = "Modelo completo";
+    $("#ltxt").textContent = t("modelDone");
     setTimeout(() => $("#loader").classList.add("done"), 700);
   }
   var EYE = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>';
   var EYE_OFF = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4M6.2 6.3C3.6 8 2 12 2 12s3.6 7 10 7a9.6 9.6 0 0 0 4.3-1"/></svg>';
+  function localize() {
+    const ov = (window.ANAT_I18N || {})[lang] || {};
+    DATA2.systems = BASE_SYS.map((s) => ({ ...s, ...(ov.systems || {})[s.k] || {} }));
+    DATA2.systems.forEach((s) => SYS[s.k] = s);
+    CONC = DATA2.concepts = BASE_CONC.map((c, i) => {
+      const o = (ov.concepts || [])[i];
+      return o ? { ...c, n: o[0], g: o[1], d: o[2], f: o[3] || [] } : c;
+    });
+  }
+  function applyStatic() {
+    document.documentElement.lang = lang;
+    document.title = t("title");
+    document.querySelectorAll("[data-i18n]").forEach((el) => {
+      el.textContent = t(el.dataset.i18n);
+    });
+    document.querySelectorAll("[data-i18n-html]").forEach((el) => {
+      el.innerHTML = t(el.dataset.i18nHtml);
+    });
+    document.querySelectorAll("[data-i18n-attr]").forEach((el) => el.dataset.i18nAttr.split(";").forEach((p) => {
+      const [a, k] = p.split(":");
+      el.setAttribute(a, t(k));
+    }));
+    const next = LANGS[(LANGS.indexOf(lang) + 1) % LANGS.length];
+    $("#lang").textContent = next.toUpperCase();
+    $("#lang").title = LANG_NAMES[next];
+    if (DATA2) {
+      const nConc = new Set(DATA2.parts.map((p) => p.c)).size;
+      $("#stats").textContent = t("stats", DATA2.parts.length, nConc, DATA2.systems.length);
+    }
+  }
+  async function setLang(l) {
+    try {
+      await loadOverlay(l);
+    } catch (e) {
+      console.warn("Sin traducci\xF3n para", l);
+      return;
+    }
+    lang = l;
+    try {
+      localStorage.setItem("lang", l);
+    } catch (e) {
+    }
+    const openSys = [...document.querySelectorAll(".sys.open")].map((el) => el.dataset.sys);
+    const openGrp = [...document.querySelectorAll(".grp.open")].map((el) => el.dataset.gid);
+    localize();
+    applyStatic();
+    buildSystemsUI();
+    openSys.forEach((k) => {
+      const el = document.querySelector(`.sys[data-sys="${k}"]`);
+      if (el) {
+        el.classList.add("open");
+        el.querySelector(".sysname").setAttribute("aria-expanded", "true");
+      }
+    });
+    openGrp.forEach((g) => document.querySelector(`.grp[data-gid="${CSS.escape(g)}"] .grow button`)?.click());
+    if (selected) {
+      const c = CONC[PARTS[selected].p.c];
+      $("#label .ln").textContent = c.n;
+      $("#label .ls").textContent = [SYS[c.s].n, SIDE[PARTS[selected].p.sd]].filter(Boolean).join(" \xB7 ");
+    }
+    renderInfo();
+    refreshListStates();
+    if ($("#q").value) $("#q").dispatchEvent(new Event("input"));
+  }
+  $("#lang").addEventListener("click", () => setLang(LANGS[(LANGS.indexOf(lang) + 1) % LANGS.length]));
   var CHEV = '<svg class="chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m9 6 6 6-6 6"/></svg>';
   function buildSystemsUI() {
     const box = $("#systems");
     box.innerHTML = "";
     for (const s of DATA2.systems) {
       const parts = DATA2.parts.filter((p) => CONC[p.c].s === s.k);
-      const groups = {};
+      const groups = {}, gname = {};
       parts.forEach((p) => {
         var _a;
-        return (groups[_a = CONC[p.c].g] || (groups[_a] = [])).push(p);
+        const c = CONC[p.c];
+        (groups[_a = c.gk] || (groups[_a] = [])).push(p);
+        gname[c.gk] = c.g;
       });
       const el = document.createElement("div");
       el.className = "sys";
@@ -35063,15 +35303,16 @@ void main() {
       el.innerHTML = `<div class="sysrow"><span class="sw" style="background:${s.c}"></span>
       <button class="sysname" aria-expanded="false">${CHEV}${esc(s.n)}</button>
       <span class="count">${parts.length}</span>
-      <button class="eye" aria-pressed="true" aria-label="Mostrar u ocultar ${esc(s.n)}">${EYE}</button></div>
-      <div class="oprow"><label for="op-${s.k}">Opacidad</label><input type="range" id="op-${s.k}" min="0" max="100" value="${Math.round(sysState[s.k].op * 100)}" style="--c:${s.c}"><output>${Math.round(sysState[s.k].op * 100)} %</output></div>
+      <button class="eye" aria-pressed="true" aria-label="${esc(t("toggleSys", s.n))}">${EYE}</button></div>
+      <div class="oprow"><label for="op-${s.k}">${t("opacity")}</label><input type="range" id="op-${s.k}" min="0" max="100" value="${Math.round(sysState[s.k].op * 100)}" style="--c:${s.c}"><output>${Math.round(sysState[s.k].op * 100)} %</output></div>
       <div class="groups"></div>`;
       const gbox = el.querySelector(".groups");
-      Object.keys(groups).sort((a, b) => a.localeCompare(b, "es")).forEach((g) => {
+      Object.keys(groups).sort((a, b) => gname[a].localeCompare(gname[b], lang)).forEach((g) => {
         const gid = s.k + "|" + g;
         const ge = document.createElement("div");
         ge.className = "grp";
-        ge.innerHTML = `<div class="grow"><input type="checkbox" checked aria-label="Mostrar ${esc(g)}"><button>${esc(g)}</button><span class="count">${groups[g].length}</span></div><div class="plist"></div>`;
+        ge.dataset.gid = gid;
+        ge.innerHTML = `<div class="grow"><input type="checkbox" ${hiddenGroups.has(gid) ? "" : "checked"} aria-label="${esc(t("showGroup", gname[g]))}"><button>${esc(gname[g])}</button><span class="count">${groups[g].length}</span></div><div class="plist"></div>`;
         ge.querySelector("input").addEventListener("change", (e) => {
           e.target.checked ? hiddenGroups.delete(gid) : hiddenGroups.add(gid);
           exitIsolate();
@@ -35080,7 +35321,7 @@ void main() {
         ge.querySelector("button").addEventListener("click", () => {
           const pl = ge.querySelector(".plist");
           if (!pl.childElementCount) {
-            groups[g].sort((a, b) => CONC[a.c].n.localeCompare(CONC[b.c].n, "es") || a.sd.localeCompare(b.sd)).forEach((p) => pl.appendChild(partButton(p)));
+            groups[g].sort((a, b) => CONC[a.c].n.localeCompare(CONC[b.c].n, lang) || a.sd.localeCompare(b.sd)).forEach((p) => pl.appendChild(partButton(p)));
             refreshListStates();
           }
           ge.classList.toggle("open");
@@ -35160,10 +35401,10 @@ void main() {
     }
     const words = q.split(/\s+/);
     const hits = DATA2.parts.filter((p) => {
-      const h = norm(CONC[p.c].n + " " + p.en + " " + CONC[p.c].g);
+      const h = norm(CONC[p.c].n + " " + p.en + " " + CONC[p.c].g + " " + BASE_CONC[p.c].n);
       return words.every((w) => h.includes(w));
     }).sort((a, b) => norm(CONC[a.c].n).indexOf(words[0]) - norm(CONC[b.c].n).indexOf(words[0]) || CONC[a.c].n.length - CONC[b.c].n.length).slice(0, 40);
-    box.innerHTML = hits.length ? "" : '<div class="eyebrow" style="padding:10px 8px">Sin resultados</div>';
+    box.innerHTML = hits.length ? "" : `<div class="eyebrow" style="padding:10px 8px">${t("noResults")}</div>`;
     hits.forEach((p) => box.appendChild(partButton(p)));
     box.hidden = false;
     $("#systems").hidden = true;
@@ -35173,23 +35414,18 @@ void main() {
     const box = $("#info");
     if (!selected) {
       box.innerHTML = `<div class="empty" style="display:flex;flex-direction:column;gap:14px">
-      <div class="eyebrow">C\xF3mo usarlo</div>
-      <h2>Selecciona cualquier estructura del cuerpo</h2>
+      <div class="eyebrow">${t("howTo")}</div>
+      <h2>${t("selectAny")}</h2>
       <ul class="howto">
-        <li><span>\u2460</span><span>Arrastra para girar, rueda o pellizca para acercar y clic derecho para desplazar.</span></li>
-        <li><span>\u2461</span><span>Haz clic en un \xF3rgano, hueso o m\xFAsculo para ver su nombre y su ficha.</span></li>
-        <li><span>\u2462</span><span>Usa <b>Pelar capas</b> o el ojo de cada sistema para retirar tejidos; ajusta su opacidad para ver a trav\xE9s.</span></li>
-        <li><span>\u2463</span><span>Atajos: <kbd>Esc</kbd> deseleccionar \xB7 <kbd>F</kbd> enfocar \xB7 <kbd>H</kbd> ocultar \xB7 <kbd>I</kbd> aislar</span></li>
+        <li><span>\u2460</span><span>${t("how1")}</span></li>
+        <li><span>\u2461</span><span>${t("how2")}</span></li>
+        <li><span>\u2462</span><span>${t("how3")}</span></li>
+        <li><span>\u2463</span><span>${t("how4")}</span></li>
       </ul>
-      <div class="eyebrow" style="margin-top:6px">Sistemas incluidos</div>
+      <div class="eyebrow" style="margin-top:6px">${t("systemsIncluded")}</div>
       <div class="syslist">${DATA2.systems.map((s2) => `<div><span class="sw" style="background:${s2.c}"></span><span><b>${esc(s2.n)}.</b> ${esc(s2.d)}</span></div>`).join("")}</div>
-      <details class="about"><summary>Acerca del modelo y su rigor</summary>
-        <p>La geometr\xEDa procede de <a href="https://lifesciencedb.jp/bp3d/" target="_blank" rel="noopener">BodyParts3D</a> (Database Center for Life Science, Jap\xF3n), un atlas construido a partir de im\xE1genes de resonancia magn\xE9tica de un var\xF3n adulto y etiquetado con los identificadores de la <i>Foundational Model of Anatomy</i> (FMA). Cada malla conserva su identificador original, visible en la ficha.</p>
-        <p>Para que funcione en el navegador, las mallas se han simplificado (\u224826 millones \u2192 \u22483,3 millones de tri\xE1ngulos) sin alterar su posici\xF3n ni su forma general. La nomenclatura sigue la Terminolog\xEDa Anat\xF3mica en espa\xF1ol.</p>
-        <p><b>Estructuras que el modelo de origen no incluye:</b></p>
-        <ul><li>M\xE9dula espinal y nervios perif\xE9ricos (solo el nervio y la v\xEDa \xF3pticos).</li><li>Gl\xE1ndula tiroides, lengua, gl\xE1ndulas salivales, faringe y laringe (salvo el cart\xEDlago tiroides).</li><li>Ganglios y vasos linf\xE1ticos; la mayor\xEDa de arterias y venas de los miembros y de la cabeza.</li><li>Terceros molares, meninges y algunas circunvoluciones cerebrales.</li><li>Anatom\xEDa femenina: el modelo es de un \xFAnico individuo var\xF3n, por lo que hay variaci\xF3n anat\xF3mica normal entre personas.</li></ul>
-        <p>Licencia: los datos se distribuyen bajo <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/deed.es" target="_blank" rel="noopener">CC BY-SA 2.1 Jap\xF3n</a>; las mallas derivadas y las fichas de este visor se comparten bajo <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.es" target="_blank" rel="noopener">CC BY-SA 4.0</a>, y el c\xF3digo bajo licencia MIT.</p>
-        <p><b>Uso educativo, no cl\xEDnico.</b> Este atlas es un material de estudio: no sirve para diagn\xF3stico ni para decisiones m\xE9dicas, y sus fichas no han sido revisadas por especialistas.</p>
+      <details class="about"><summary>${t("aboutTitle")}</summary>
+        ${t("about")}
       </details></div>`;
       return;
     }
@@ -35197,11 +35433,11 @@ void main() {
     box.innerHTML = `<div class="tags"><span class="tag"><span class="sw" style="background:${s.c}"></span>${esc(s.n)}</span>${P.p.sd ? `<span class="tag">${SIDE[P.p.sd]}</span>` : ""}</div>
     <h2>${esc(c.n)}</h2>
     <div class="grpname">${esc(c.g)}</div>
-    <div class="actions"><button class="btn primary" data-act="focus">Enfocar</button><button class="btn" data-act="iso">${isolated ? "Ver todo" : "Aislar"}</button><button class="btn" data-act="hide">Ocultar</button></div>
+    <div class="actions"><button class="btn primary" data-act="focus">${t("focus")}</button><button class="btn" data-act="iso">${isolated ? t("showAll") : t("isolate")}</button><button class="btn" data-act="hide">${t("hide")}</button></div>
     <p class="desc">${esc(c.d)}</p>
     ${c.f.length ? `<dl class="facts">${c.f.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
-    <label style="display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--mut);cursor:pointer"><input type="checkbox" id="focusmode" ${focusMode ? "checked" : ""} style="accent-color:var(--acc)"> Atenuar el resto del cuerpo</label>
-    <div class="src">Fuente: BodyParts3D \xB7 ${esc(selected)}<br>T\xE9rmino original: ${esc(P.p.en)}</div>`;
+    <label style="display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--mut);cursor:pointer"><input type="checkbox" id="focusmode" ${focusMode ? "checked" : ""} style="accent-color:var(--acc)"> ${t("dimRest")}</label>
+    <div class="src">${t("source", esc(selected), esc(P.p.en))}</div>`;
     box.querySelectorAll("[data-act]").forEach((b) => b.addEventListener("click", () => ({ focus: focusSel, iso: toggleIsolate, hide: hideSel })[b.dataset.act]()));
     box.querySelector("#focusmode").addEventListener("change", (e) => {
       focusMode = e.target.checked;
@@ -35218,7 +35454,7 @@ void main() {
       if (isolated) isolated.add(id);
       sysState[c.s].on = true;
       hiddenParts.delete(id);
-      hiddenGroups.delete(c.s + "|" + c.g);
+      hiddenGroups.delete(c.s + "|" + c.gk);
       applyVisibility();
     }
     P.mesh.material = hlMat;
@@ -35295,8 +35531,8 @@ void main() {
   }
   var VIEWS = { front: [0, 0.95, 3.3], back: [0, 0.95, -3.3], right: [-3.3, 0.95, 0], left: [3.3, 0.95, 0], top: [0, 4.2, 0.35] };
   function setView(v) {
-    const t = new Vector3(0, v === "top" ? 0.9 : 0.88, 0);
-    flyTo(new Vector3(...VIEWS[v]), t);
+    const t2 = new Vector3(0, v === "top" ? 0.9 : 0.88, 0);
+    flyTo(new Vector3(...VIEWS[v]), t2);
   }
   document.querySelectorAll("[data-view]").forEach((b) => b.addEventListener("click", () => setView(b.dataset.view)));
   camera.position.set(0.9, 1.15, 3.1);
@@ -35397,10 +35633,10 @@ void main() {
     else if (e.key === "h" || e.key === "H") hideSel();
     else if (e.key === "i" || e.key === "I") toggleIsolate();
   });
-  function showTab(t) {
+  function showTab(t2) {
     if (innerWidth > 900) return;
-    ["left", "right"].forEach((k) => $("#" + k).classList.toggle("show", k === t));
-    document.querySelectorAll("[data-tab]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tab === t)));
+    ["left", "right"].forEach((k) => $("#" + k).classList.toggle("show", k === t2));
+    document.querySelectorAll("[data-tab]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tab === t2)));
     fitView();
   }
   function fitView() {
@@ -35440,7 +35676,7 @@ void main() {
   var T0 = performance.now();
   function tick() {
     requestAnimationFrame(tick);
-    const t = (performance.now() - T0) / 1e3;
+    const t2 = (performance.now() - T0) / 1e3;
     if (fly) {
       let k = Math.min(1, (performance.now() - fly.s) / fly.ms);
       k = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
@@ -35449,8 +35685,8 @@ void main() {
       if (k >= 1) fly = null;
     }
     controls.update();
-    hlMat.emissiveIntensity = 0.28 + 0.14 * Math.sin(t * 3.2);
-    ghostMat.opacity = 0.16 + 0.08 * Math.sin(t * 3.2);
+    hlMat.emissiveIntensity = 0.28 + 0.14 * Math.sin(t2 * 3.2);
+    ghostMat.opacity = 0.16 + 0.08 * Math.sin(t2 * 3.2);
     renderer.render(scene, camera);
     const lab = $("#label"), line = $("#lline"), dot = $("#ldot");
     if (selected && anchorLocal && PARTS[selected].mesh.visible) {
@@ -35486,7 +35722,7 @@ void main() {
   tick();
   boot().catch((err) => {
     $("#err").hidden = false;
-    $("#err").textContent = "Error al cargar los datos: " + err.message;
+    $("#err").textContent = t("errData", err.message);
     console.error(err);
   });
 })();
