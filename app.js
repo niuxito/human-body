@@ -34839,7 +34839,7 @@ void main() {
   var STR = {
     es: {
       title: "Anatom\xEDa en capas",
-      metaDesc: "Atlas 3D interactivo del cuerpo humano (BodyParts3D) con capas y fichas en espa\xF1ol.",
+      metaDesc: "Atlas 3D interactivo del cuerpo humano con 934 estructuras anat\xF3micas en capas, fichas y b\xFAsqueda. Disponible en espa\xF1ol e ingl\xE9s. Uso educativo.",
       brand: "Anatom\xEDa <em>en capas</em>",
       langLabel: "Idioma",
       views: "Vistas",
@@ -34901,7 +34901,7 @@ void main() {
     },
     en: {
       title: "Layered Anatomy",
-      metaDesc: "Interactive 3D atlas of the human body (BodyParts3D) with layers and anatomical cards.",
+      metaDesc: "Interactive 3D atlas of the human body with 934 anatomical structures in layers, cards and search. Available in Spanish and English. Educational use.",
       brand: "Layered <em>anatomy</em>",
       langLabel: "Language",
       views: "Views",

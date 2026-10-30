@@ -15,7 +15,7 @@ export function detectLang(){
 export const STR = {
   es: {
     title: 'Anatomía en capas',
-    metaDesc: 'Atlas 3D interactivo del cuerpo humano (BodyParts3D) con capas y fichas en español.',
+    metaDesc: 'Atlas 3D interactivo del cuerpo humano con 934 estructuras anatómicas en capas, fichas y búsqueda. Disponible en español e inglés. Uso educativo.',
     brand: 'Anatomía <em>en capas</em>',
     langLabel: 'Idioma',
     views: 'Vistas', front: 'Anterior', back: 'Posterior', right: 'Lateral dcho.', left: 'Lateral izq.', top: 'Superior',
@@ -53,7 +53,7 @@ export const STR = {
   },
   en: {
     title: 'Layered Anatomy',
-    metaDesc: 'Interactive 3D atlas of the human body (BodyParts3D) with layers and anatomical cards.',
+    metaDesc: 'Interactive 3D atlas of the human body with 934 anatomical structures in layers, cards and search. Available in Spanish and English. Educational use.',
     brand: 'Layered <em>anatomy</em>',
     langLabel: 'Language',
     views: 'Views', front: 'Anterior', back: 'Posterior', right: 'Right lateral', left: 'Left lateral', top: 'Superior',

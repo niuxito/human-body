@@ -1,0 +1,10 @@
+# Ficheros internos: no se publican en la web
+CLAUDE.md
+*.zip
+.deploy-local.sh
+herramientas/
+src/
+docs/
+*.md
+!LICENSE*
+.git/
